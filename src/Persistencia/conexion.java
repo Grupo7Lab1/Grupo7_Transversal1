@@ -7,12 +7,12 @@ package Persistencia;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-/**
- *
- * @author Mrjoshep
- */
+
 public class conexion {
-    private static final String URL = "jdbc:mariadb://localhost:3306/sgulp";
+
+    private static final String URL =
+            "jdbc:mariadb://localhost:3306/laboratorio1_grupo7";
+
     private static final String USUARIO = "root";
     private static final String CLAVE = "";
 
