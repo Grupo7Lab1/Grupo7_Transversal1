@@ -324,9 +324,7 @@ public class vista extends javax.swing.JFrame {
             );
 
             return;
-        }
-
-        alumnoData.guardarAlumno(a);
+        }       
 
         if (alumnoData.guardarAlumno(a)) {
             cargarTabla();
