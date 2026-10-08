@@ -22,63 +22,43 @@ public class vista extends javax.swing.JFrame {
 
     private alumno leerFormulario() {
 
-        String apellidoNombre = jTApellidoyNombre.getText().trim();
+        String apellido = jTApellido.getText().trim();
+        String nombre = jTNombre.getText().trim();
         String dni = jTDni.getText().trim();
 
-        if (apellidoNombre.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Ingresá apellido y nombre"
-            );
+        if (apellido.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingresá el apellido");
+            return null;
+        }
+
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingresá el nombre");
             return null;
         }
 
         if (dni.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Ingresá el DNI"
-            );
+            JOptionPane.showMessageDialog(this, "Ingresá el DNI");
             return null;
         }
 
         if (jDateChooser1.getDate() == null) {
             JOptionPane.showMessageDialog(
-                    this,
-                    "Seleccioná una fecha de nacimiento"
+                    this, "Seleccioná una fecha de nacimiento"
             );
             return null;
         }
 
-        /*
-         * El campo de la pantalla dice:
-         * Apellido y Nombre
-         *
-         * Tomamos la primera palabra como apellido
-         * y el resto como nombre.
-         */
-        String[] partes = apellidoNombre.split("\\s+", 2);
+        LocalDate fechaNacimiento = new java.sql.Date(
+                jDateChooser1.getDate().getTime()
+        ).toLocalDate();
 
-        String apellido = partes[0];
-        String nombre = "";
-
-        if (partes.length > 1) {
-            nombre = partes[1];
-        }
-
-        LocalDate fechaNacimiento =
-                new java.sql.Date(
-                        jDateChooser1.getDate().getTime()
-                ).toLocalDate();
-
-        alumno a = new alumno();
-
-        a.setDni(dni);
-        a.setApellido(apellido);
-        a.setNombre(nombre);
-        a.setFechaNacimiento(fechaNacimiento);
-        a.setActivo(jCBActivo.isSelected());
-
-        return a;
+        return new alumno(
+                dni,
+                nombre,
+                apellido,
+                fechaNacimiento,
+                jCBActivo.isSelected()
+        );
     }
 
     private void cargarTabla() {
@@ -100,25 +80,21 @@ public class vista extends javax.swing.JFrame {
     }
 
     private void limpiarCampos() {
-
-        jTApellidoyNombre.setText("");
+        jTApellido.setText("");
+        jTNombre.setText("");
         jTDni.setText("");
         jDateChooser1.setDate(null);
         jCBActivo.setSelected(false);
 
         idSeleccionado = 0;
-
         jTAlumno.clearSelection();
     }
 
     private void mostrarAlumno(alumno a) {
-
         idSeleccionado = a.getIdAlumno();
 
-        jTApellidoyNombre.setText(
-                a.getApellido() + " " + a.getNombre()
-        );
-
+        jTApellido.setText(a.getApellido());
+        jTNombre.setText(a.getNombre());
         jTDni.setText(a.getDni());
 
         jDateChooser1.setDate(
@@ -139,8 +115,11 @@ public class vista extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        JlApellidoyNombre = new javax.swing.JLabel();
-        jTApellidoyNombre = new javax.swing.JTextField();
+        jLTitulo = new javax.swing.JLabel();
+        jLNombre = new javax.swing.JLabel();
+        jTNombre = new javax.swing.JTextField();
+        JlApellido = new javax.swing.JLabel();
+        jTApellido = new javax.swing.JTextField();
         jLDNI = new javax.swing.JLabel();
         jTDni = new javax.swing.JTextField();
         jLFechaDeNacimiento = new javax.swing.JLabel();
@@ -152,7 +131,6 @@ public class vista extends javax.swing.JFrame {
         JBModMateria = new javax.swing.JButton();
         JBBuscarMateria = new javax.swing.JButton();
         jBLimpiar = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTAlumno = new javax.swing.JTable();
@@ -172,7 +150,13 @@ public class vista extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        JlApellidoyNombre.setText("Apellido y Nombre");
+        jLTitulo.setText("Gestion de Alumnos");
+
+        jLNombre.setText("Nombre");
+
+        jTNombre.addActionListener(this::jTNombreActionPerformed);
+
+        JlApellido.setText("Apellido");
 
         jLDNI.setText("N° Documento");
 
@@ -197,8 +181,6 @@ public class vista extends javax.swing.JFrame {
 
         jBLimpiar.setText("Limpiar");
         jBLimpiar.addActionListener(this::jBLimpiarActionPerformed);
-
-        jLabel1.setText("Gestion de Alumnos");
 
         jTAlumno.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -225,29 +207,21 @@ public class vista extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(138, 138, 138)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLDNI, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jBAltaMateria)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLFechaDeNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(19, 19, 19)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jCBActivo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(jCBActivo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(524, 524, 524))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(64, 64, 64)
                                         .addComponent(jBBajaMateria)
@@ -256,43 +230,67 @@ public class vista extends javax.swing.JFrame {
                                         .addGap(104, 104, 104)
                                         .addComponent(JBBuscarMateria)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jBLimpiar)))))
+                                        .addComponent(jBLimpiar))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLDNI)
+                                    .addComponent(JlApellido))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jTDni, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
+                                        .addComponent(jTNombre, javax.swing.GroupLayout.Alignment.LEADING)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(16, 16, 16))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jTDni, javax.swing.GroupLayout.PREFERRED_SIZE, 629, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(JlApellidoyNombre)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTApellidoyNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 628, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLFechaDeNacimiento)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLNombre))
+                        .addGap(0, 0, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 770, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 770, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addComponent(jLTitulo)))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JlApellidoyNombre)
-                    .addComponent(jTApellidoyNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
+                .addComponent(jLTitulo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLDNI)
-                    .addComponent(jTDni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JlApellido)
+                    .addComponent(jTApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLFechaDeNacimiento)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLEstado)
-                    .addComponent(jCBActivo))
-                .addGap(52, 52, 52)
+                    .addComponent(jLNombre)
+                    .addComponent(jTNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(jLFechaDeNacimiento)
+                        .addGap(18, 18, 18))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTDni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLDNI))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCBActivo)
+                    .addComponent(jLEstado))
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jBAltaMateria)
                     .addComponent(jBBajaMateria)
@@ -301,7 +299,7 @@ public class vista extends javax.swing.JFrame {
                     .addComponent(jBLimpiar))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
 
         pack();
@@ -314,31 +312,34 @@ public class vista extends javax.swing.JFrame {
     private void jBAltaMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAltaMateriaActionPerformed
         alumno a = leerFormulario();
 
-    if (a == null) {
-        return;
-    }
+        if (a == null) {
+            return;
+        }
 
-    if (alumnoData.buscarPorDni(a.getDni()) != null) {
+        if (alumnoData.buscarPorDni(a.getDni()) != null) {
 
-        JOptionPane.showMessageDialog(
-                this,
-                "Ya existe un alumno con ese DNI"
-        );
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Ya existe un alumno con ese DNI"
+            );
 
-        return;
-    }
+            return;
+        }
 
-    alumnoData.guardarAlumno(a);
+        alumnoData.guardarAlumno(a);
 
-    cargarTabla();
-    limpiarCampos();
-
-    JOptionPane.showMessageDialog(
-            this,
-            "Alumno guardado correctamente"
-    );
-
-
+        if (alumnoData.guardarAlumno(a)) {
+            cargarTabla();
+            limpiarCampos();
+            JOptionPane.showMessageDialog(this, "Alumno guardado correctamente");
+        } else {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo guardar el alumno. Revisá los datos y la conexión.",
+                    "Error al guardar",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }      
     }//GEN-LAST:event_jBAltaMateriaActionPerformed
 
     private void jBBajaMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBBajaMateriaActionPerformed
@@ -353,15 +354,19 @@ public class vista extends javax.swing.JFrame {
     }
 
     alumnoData.darDeBaja(idSeleccionado);
-
-    cargarTabla();
-    limpiarCampos();
-
-    JOptionPane.showMessageDialog(
-            this,
-            "Alumno dado de baja"
-    );
-
+        if (alumnoData.darDeBaja(idSeleccionado)) {
+            cargarTabla();
+            limpiarCampos();
+            JOptionPane.showMessageDialog(this, "Alumno dado de baja");
+        } else {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo dar de baja al alumno. Verificá la conexión "
+                    + "y que el alumno exista.",
+                    "Error al dar de baja",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//GEN-LAST:event_jBBajaMateriaActionPerformed
 
     private void JBModMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBModMateriaActionPerformed
@@ -383,15 +388,19 @@ public class vista extends javax.swing.JFrame {
 
     a.setIdAlumno(idSeleccionado);
 
-    alumnoData.modificar(a);
-
-    cargarTabla();
-    limpiarCampos();
-
-    JOptionPane.showMessageDialog(
-            this,
-            "Alumno modificado correctamente"
-    );
+        if (alumnoData.modificar(a)) {
+            cargarTabla();
+            limpiarCampos();
+            JOptionPane.showMessageDialog(this, "Alumno modificado correctamente");
+        } else {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo modificar el alumno. Verificá que el DNI no esté repetido "
+                    + "y que haya conexión con la base de datos.",
+                    "Error al modificar",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }//GEN-LAST:event_JBModMateriaActionPerformed
 
     private void JBBuscarMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBBuscarMateriaActionPerformed
@@ -423,12 +432,7 @@ public class vista extends javax.swing.JFrame {
     }//GEN-LAST:event_JBBuscarMateriaActionPerformed
 
     private void jBLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBLimpiarActionPerformed
-        jTApellidoyNombre.setText("");
-        jTDni.setText("");
-        jDateChooser1.setDate(null);
-        jCBActivo.setSelected(false);
-        idSeleccionado = 0;
-        jTAlumno.clearSelection();
+        limpiarCampos();
     }//GEN-LAST:event_jBLimpiarActionPerformed
 
     private void jTAlumnoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTAlumnoMouseClicked
@@ -446,6 +450,10 @@ public class vista extends javax.swing.JFrame {
             mostrarAlumno(a);
         }
     }//GEN-LAST:event_jTAlumnoMouseClicked
+
+    private void jTNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTNombreActionPerformed
 
     /**
      * @param args the command line arguments
@@ -488,7 +496,7 @@ public class vista extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton JBBuscarMateria;
     private javax.swing.JButton JBModMateria;
-    private javax.swing.JLabel JlApellidoyNombre;
+    private javax.swing.JLabel JlApellido;
     private javax.swing.JButton jBAltaMateria;
     private javax.swing.JButton jBBajaMateria;
     private javax.swing.JButton jBLimpiar;
@@ -497,13 +505,15 @@ public class vista extends javax.swing.JFrame {
     private javax.swing.JLabel jLDNI;
     private javax.swing.JLabel jLEstado;
     private javax.swing.JLabel jLFechaDeNacimiento;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLNombre;
+    private javax.swing.JLabel jLTitulo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTAlumno;
-    private javax.swing.JTextField jTApellidoyNombre;
+    private javax.swing.JTextField jTApellido;
     private javax.swing.JTextField jTDni;
+    private javax.swing.JTextField jTNombre;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

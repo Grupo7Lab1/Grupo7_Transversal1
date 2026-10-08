@@ -12,7 +12,7 @@ import java.util.List;
 public class alumnoData {
 // GUARDAR ALUMNO
 
-    public void guardarAlumno(alumno a) {
+    public boolean guardarAlumno(alumno a) {
 
         String sql = "INSERT INTO alumno "
                 + "(dni, nombre, apellido, fechaNacimiento, activo) "
@@ -24,11 +24,9 @@ public class alumnoData {
             ps.setString(2, a.getNombre());
             ps.setString(3, a.getApellido());
             ps.setDate(4, Date.valueOf(a.getFechaNacimiento()));
-            ps.setBoolean(5, a.isActivo());
-
-            ps.executeUpdate();
-
-            System.out.println("Alumno guardado correctamente.");
+            ps.setBoolean(5, a.isActivo());  
+            
+            return ps.executeUpdate() == 1;
 
         } catch (SQLException e) {
 
@@ -36,6 +34,7 @@ public class alumnoData {
                     "Error al guardar alumno: "
                     + e.getMessage()
             );
+            return false;
         }
     }
 
@@ -151,7 +150,7 @@ public class alumnoData {
     }
 
     // MODIFICAR ALUMNO
-    public void modificar(alumno a) {
+    public boolean modificar(alumno a) {
 
         String sql = "UPDATE alumno SET "
                 + "dni = ?, "
@@ -170,11 +169,7 @@ public class alumnoData {
             ps.setBoolean(5, a.isActivo());
             ps.setInt(6, a.getIdAlumno());
 
-            ps.executeUpdate();
-
-            System.out.println(
-                    "Alumno modificado correctamente."
-            );
+            return ps.executeUpdate() == 1;
 
         } catch (SQLException e) {
 
@@ -182,10 +177,11 @@ public class alumnoData {
                     "Error al modificar alumno: "
                     + e.getMessage()
             );
+            return false;
         }
     }
     // DAR DE BAJA
-    public void darDeBaja(int idAlumno) {
+    public boolean darDeBaja(int idAlumno) {
 
         String sql = "UPDATE alumno "
                 + "SET activo = false "
@@ -195,11 +191,7 @@ public class alumnoData {
 
             ps.setInt(1, idAlumno);
 
-            ps.executeUpdate();
-
-            System.out.println(
-                    "Alumno dado de baja correctamente."
-            );
+            return ps.executeUpdate() == 1;
 
         } catch (SQLException e) {
 
@@ -207,6 +199,7 @@ public class alumnoData {
                     "Error al dar de baja alumno: "
                     + e.getMessage()
             );
+            return false;
         }
     }
 }
