@@ -1,21 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package Vista;
 
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 import Persistencia.alumnoData;
 import dominio.alumno;
 import java.time.LocalDate;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Nestor Marchizone
- */
 public class vista extends javax.swing.JFrame {
 
     private alumnoData alumnoData = new alumnoData();
