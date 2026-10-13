@@ -24,8 +24,8 @@ public class alumnoData {
             ps.setString(2, a.getNombre());
             ps.setString(3, a.getApellido());
             ps.setDate(4, Date.valueOf(a.getFechaNacimiento()));
-            ps.setBoolean(5, a.isActivo());  
-            
+            ps.setBoolean(5, a.isActivo());
+
             return ps.executeUpdate() == 1;
 
         } catch (SQLException e) {
@@ -74,6 +74,7 @@ public class alumnoData {
 
         return alumnos;
     }
+
     // BUSCAR ALUMNO POR DNI
     public alumno buscarPorDni(String dni) {
 
@@ -111,6 +112,7 @@ public class alumnoData {
 
         return null;
     }
+
     // BUSCAR ALUMNO POR ID
     public alumno buscarPorId(int id) {
 
@@ -180,25 +182,62 @@ public class alumnoData {
             return false;
         }
     }
-    // DAR DE BAJA
-    public boolean darDeBaja(int idAlumno) {
+    // DAR DE Alta
 
-        String sql = "UPDATE alumno "
-                + "SET activo = false "
-                + "WHERE idAlumno = ?";
+    public boolean darDeAlta(int idAlumno) {
+        String sql = "UPDATE alumno SET activo = true WHERE idAlumno = ?";
 
         try (Connection con = conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, idAlumno);
-
             return ps.executeUpdate() == 1;
 
         } catch (SQLException e) {
+            System.out.println("Error al dar de alta: " + e.getMessage());
+            return false;
+        }
+    }
+// DAR DE BAJA
 
-            System.out.println(
-                    "Error al dar de baja alumno: "
-                    + e.getMessage()
-            );
+    public boolean daDeBaja(int idAlumno) {
+        String sql = "DELETE FROM alumno WHERE idAlumno = ?";
+
+        try (Connection con = conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idAlumno);
+            return ps.executeUpdate() == 1;
+
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar alumno: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean darDeBaja(int idAlumno) {
+        String sql = "UPDATE alumno SET activo = false WHERE idAlumno = ?";
+
+        try (Connection con = conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idAlumno);
+            return ps.executeUpdate() == 1;
+
+        } catch (SQLException e) {
+            System.out.println("Error al dar de baja alumno: " + e.getMessage());
+            return false;
+        }
+    }
+
+    //Eliminar Alumno
+    public boolean eliminar(int idAlumno) {
+        String sql = "DELETE FROM alumno WHERE idAlumno = ?";
+
+        try (Connection con = conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idAlumno);
+            return ps.executeUpdate() == 1;
+
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar alumno: " + e.getMessage());
             return false;
         }
     }

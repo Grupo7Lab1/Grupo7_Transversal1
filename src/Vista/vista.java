@@ -1,4 +1,3 @@
-
 package Vista;
 
 import Persistencia.alumnoData;
@@ -12,8 +11,8 @@ public class vista extends javax.swing.JFrame {
     private alumnoData alumnoData = new alumnoData();
     private int idSeleccionado = 0;
 
-    private static final java.util.logging.Logger logger =
-            java.util.logging.Logger.getLogger(vista.class.getName());
+    private static final java.util.logging.Logger logger
+            = java.util.logging.Logger.getLogger(vista.class.getName());
 
     public vista() {
         initComponents();
@@ -63,8 +62,8 @@ public class vista extends javax.swing.JFrame {
 
     private void cargarTabla() {
 
-        DefaultTableModel modelo =
-                (DefaultTableModel) jTAlumno.getModel();
+        DefaultTableModel modelo
+                = (DefaultTableModel) jTAlumno.getModel();
 
         modelo.setRowCount(0);
 
@@ -339,21 +338,22 @@ public class vista extends javax.swing.JFrame {
                     "Error al guardar",
                     JOptionPane.ERROR_MESSAGE
             );
-        }      
+        }
     }//GEN-LAST:event_jBAltaMateriaActionPerformed
 
     private void jBBajaMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBBajaMateriaActionPerformed
-       if (idSeleccionado == 0) {
+        if (idSeleccionado == 0) {
 
-        JOptionPane.showMessageDialog(
-                this,
-                "Seleccioná un alumno de la tabla"
-        );
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Seleccioná un alumno de la tabla"
+            );
 
-        return;
-    }
+            return;
+        }
 
-    alumnoData.darDeBaja(idSeleccionado);
+        alumnoData.darDeBaja(idSeleccionado);
+
         if (alumnoData.darDeBaja(idSeleccionado)) {
             cargarTabla();
             limpiarCampos();
@@ -370,23 +370,23 @@ public class vista extends javax.swing.JFrame {
     }//GEN-LAST:event_jBBajaMateriaActionPerformed
 
     private void JBModMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBModMateriaActionPerformed
-       if (idSeleccionado == 0) {
+        if (idSeleccionado == 0) {
 
-        JOptionPane.showMessageDialog(
-                this,
-                "Seleccioná un alumno de la tabla"
-        );
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Seleccioná un alumno de la tabla"
+            );
 
-        return;
-    }
+            return;
+        }
 
-    alumno a = leerFormulario();
+        alumno a = leerFormulario();
 
-    if (a == null) {
-        return;
-    }
+        if (a == null) {
+            return;
+        }
 
-    a.setIdAlumno(idSeleccionado);
+        a.setIdAlumno(idSeleccionado);
 
         if (alumnoData.modificar(a)) {
             cargarTabla();
@@ -404,31 +404,31 @@ public class vista extends javax.swing.JFrame {
     }//GEN-LAST:event_JBModMateriaActionPerformed
 
     private void JBBuscarMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JBBuscarMateriaActionPerformed
-       String dni = jTDni.getText().trim();
+        String dni = jTDni.getText().trim();
 
-    if (dni.isEmpty()) {
+        if (dni.isEmpty()) {
 
-        JOptionPane.showMessageDialog(
-                this,
-                "Ingresá un DNI"
-        );
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Ingresá un DNI"
+            );
 
-        return;
-    }
+            return;
+        }
 
-    alumno a = alumnoData.buscarPorDni(dni);
+        alumno a = alumnoData.buscarPorDni(dni);
 
-    if (a == null) {
+        if (a == null) {
 
-        JOptionPane.showMessageDialog(
-                this,
-                "No se encontró el alumno"
-        );
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se encontró el alumno"
+            );
 
-    } else {
+        } else {
 
-        mostrarAlumno(a);
-    }
+            mostrarAlumno(a);
+        }
     }//GEN-LAST:event_JBBuscarMateriaActionPerformed
 
     private void jBLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBLimpiarActionPerformed
@@ -459,39 +459,37 @@ public class vista extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-       try {
+        try {
 
-        for (javax.swing.UIManager.LookAndFeelInfo info :
-                javax.swing.UIManager.getInstalledLookAndFeels()) {
+            for (javax.swing.UIManager.LookAndFeelInfo info
+                    : javax.swing.UIManager.getInstalledLookAndFeels()) {
 
-            if ("Nimbus".equals(info.getName())) {
+                if ("Nimbus".equals(info.getName())) {
 
-                javax.swing.UIManager.setLookAndFeel(
-                        info.getClassName()
-                );
+                    javax.swing.UIManager.setLookAndFeel(
+                            info.getClassName()
+                    );
 
-                break;
+                    break;
+                }
             }
+
+        } catch (ReflectiveOperationException
+                | javax.swing.UnsupportedLookAndFeelException ex) {
+
+            logger.log(
+                    java.util.logging.Level.SEVERE,
+                    null,
+                    ex
+            );
         }
 
-    } catch (
-            ReflectiveOperationException
-            | javax.swing.UnsupportedLookAndFeelException ex) {
-
-        logger.log(
-                java.util.logging.Level.SEVERE,
-                null,
-                ex
+        java.awt.EventQueue.invokeLater(
+                () -> new vista().setVisible(true)
         );
     }
+    /* Create and display the form */
 
-    java.awt.EventQueue.invokeLater(
-            () -> new vista().setVisible(true)
-    );
-}
-        /* Create and display the form */
-        
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton JBBuscarMateria;

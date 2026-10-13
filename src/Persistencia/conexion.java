@@ -10,8 +10,8 @@ import java.sql.SQLException;
 
 public class conexion {
 
-    private static final String URL =
-            "jdbc:mariadb://localhost:3306/laboratorio1_grupo7";
+    private static final String URL
+            = "jdbc:mariadb://localhost:3306/laboratorio1_grupo7";
 
     private static final String USUARIO = "root";
     private static final String CLAVE = "";
