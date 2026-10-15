@@ -96,4 +96,6 @@ public class alumno {
                 + " | " + fechaNacimiento
                 + " | Activo: " + activo;
     }
+
+  
 }
