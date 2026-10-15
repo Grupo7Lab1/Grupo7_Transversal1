@@ -62,7 +62,7 @@ public class inscripcionData {
                 Inscripcion insc = new Inscripcion();
                 insc.setIdInscripcion(rs.getInt("idInscripcion"));
                 
-                alumno a = aluData.obtenerAlumnoPorId(rs.getInt("idAlumno"));
+                alumno a = aluData.buscarAlumno(rs.getInt("idAlumno"));
                 Materia m = matData.buscarMateria(rs.getInt("idMateria"));
                 
                 insc.setAlumno(a);
@@ -94,7 +94,7 @@ public class inscripcionData {
                 Inscripcion insc = new Inscripcion();
                 insc.setIdInscripcion(rs.getInt("idInscripcion"));
                 
-                alumno a = aluData.obtenerAlumnoPorId(rs.getInt("idAlumno"));
+                alumno a = aluData.buscarAlumno(rs.getInt("idAlumno"));
                 Materia m = matData.buscarMateria(rs.getInt("idMateria"));
                 
                 insc.setAlumno(a);
@@ -171,7 +171,7 @@ public class inscripcionData {
         return materias;
     }
 
-    // Borrar o Anular Inscripcion
+    // Borrar o Anular Inscripción
     public void borrarInscripcionMateriaAlumno(int idAlumno, int idMateria) {
         String sql = "DELETE FROM inscripcion WHERE idAlumno = ? AND idMateria = ?";
 
@@ -212,7 +212,7 @@ public class inscripcionData {
         }
     }
 
-   // Obtener Alumnos inscritos en una Materia especifica
+    // Obtener Alumnos inscritos en una Materia especifica
     public List<alumno> obtenerAlumnosPorMateria(int idMateria) {
         ArrayList<alumno> alumnosMateria = new ArrayList<>();
         String sql = "SELECT a.idAlumno, a.dni, a.nombre, a.apellido, a.fechaNacimiento, a.estado " +
@@ -243,4 +243,4 @@ public class inscripcionData {
 
         return alumnosMateria;
     }
- }
+}
