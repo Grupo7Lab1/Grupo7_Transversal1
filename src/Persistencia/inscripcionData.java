@@ -22,8 +22,8 @@ public class inscripcionData {
     private materiaData matData = new materiaData();
     private alumnoData aluData = new alumnoData();
 
-    public inscripcionData() {
-        this.con = conexion.Conectar();
+    public inscripcionData() throws SQLException {
+        this.con = conexion.conectar();
     }
 
     // Guardar o Inscribir Alumno en Materia
