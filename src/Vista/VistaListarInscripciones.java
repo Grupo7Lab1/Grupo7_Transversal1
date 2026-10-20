@@ -48,18 +48,15 @@ public class VistaListarInscripciones extends javax.swing.JInternalFrame {
         jCboAlumnos.removeAllItems();
         List<alumno> lista = aluData.listarAlumnos();
         for (alumno a : lista) {
-            if (a.isEstado()) {
+            if (a.isActivo()) {
                 jCboAlumnos.addItem(a.getNombre() + " " + a.getApellido());
             }
         }
     }
 
     private void borrarFilasTabla() {
-        int filas = modelo.getRowCount() - 1;
-        for (int i = filas; i >= 0; i--) {
-            modelo.removeRow(i);
-        }
-    }
+           modelo.setRowCount(0);
+         }
 
     private void cargarInscripcionesEnTabla() {
         borrarFilasTabla();
@@ -76,7 +73,7 @@ public class VistaListarInscripciones extends javax.swing.JInternalFrame {
                         i.getIdInscripcion(),
                         i.getMateria().getIdMateria(),
                         i.getMateria().getNombre(),
-                        i.getMateria().isEstado() ? "Inscripto" : "Inactivo",
+                        i.getMateria().isActivo() ? "Inscripto" : "Inactivo",
                         i.getNota()
                     });
                 }
@@ -215,4 +212,4 @@ public class VistaListarInscripciones extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
-
+}

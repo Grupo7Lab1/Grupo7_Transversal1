@@ -14,9 +14,6 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-
-
-
 public class VistaInscripcion extends javax.swing.JInternalFrame {
 
     private DefaultTableModel modelo = new DefaultTableModel() {
@@ -56,11 +53,9 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
 
     private void cargarComboAlumnos() {
         jCboAlumnos.removeAllItems();
-        List<alumno> lista = aluData.listarAlumnos(); // Método correcto de alumnoData
-        for (alumno a : lista) {
-            if (a.isEstado()) { // Método getter de alumno
-                jCboAlumnos.addItem(a.getNombre() + " " + a.getApellido()); 
-            }
+
+        for (alumno a : obtenerAlumnosActivos()) {
+            jCboAlumnos.addItem(a.getNombre() + " " + a.getApellido());
         }
     }
 
@@ -76,7 +71,7 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
         int indiceSeleccionado = jCboAlumnos.getSelectedIndex();
 
         if (indiceSeleccionado != -1) {
-            List<alumno> alumnos = aluData.listarAlumnos();
+            List<alumno> alumnos = obtenerAlumnosActivos();
             alumno selec = alumnos.get(indiceSeleccionado);
 
             if (selec != null) {
@@ -93,7 +88,7 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
             }
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -200,7 +195,7 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jCboAlumnosActionPerformed
 
     private void jRBInscriptasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRBInscriptasActionPerformed
-       jBInscribir.setEnabled(false);
+        jBInscribir.setEnabled(false);
         jBAnular.setEnabled(true);
         cargarMateriasEnTabla();
     }//GEN-LAST:event_jRBInscriptasActionPerformed
@@ -212,9 +207,9 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jRBnoInscriptasActionPerformed
 
     private void jBInscribirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBInscribirActionPerformed
-      int filaSeleccionada = jTable1.getSelectedRow();
+        int filaSeleccionada = jTable1.getSelectedRow();
         int indiceAlumno = jCboAlumnos.getSelectedIndex();
-        
+
         if (filaSeleccionada != -1 && indiceAlumno != -1) {
             List<alumno> alumnos = aluData.listarAlumnos();
             alumno alu = alumnos.get(indiceAlumno);
@@ -231,11 +226,11 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Debe seleccionar una materia de la tabla para inscribir.");
         }
-    
+
     }//GEN-LAST:event_jBInscribirActionPerformed
 
     private void jBAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAnularActionPerformed
-         int filaSeleccionada = jTable1.getSelectedRow();
+        int filaSeleccionada = jTable1.getSelectedRow();
         int indiceAlumno = jCboAlumnos.getSelectedIndex();
 
         if (filaSeleccionada != -1 && indiceAlumno != -1) {
@@ -249,7 +244,7 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Debe seleccionar una materia de la tabla para anular la inscripción.");
         }
-    }
+
     }//GEN-LAST:event_jBAnularActionPerformed
 
 
@@ -266,4 +261,4 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel jlbAlumno;
     // End of variables declaration//GEN-END:variables
-
+}

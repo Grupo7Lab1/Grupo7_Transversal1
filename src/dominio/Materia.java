@@ -21,7 +21,7 @@ public class Materia {
 
     // Constructor para una materia que ya tiene ID.
     public Materia(int idMateria, String codigo,
-                   String nombre, boolean activo) {
+            String nombre, boolean activo) {
         this(codigo, nombre, activo);
         this.idMateria = idMateria;
     }
@@ -63,5 +63,4 @@ public class Materia {
         return codigo + " - " + nombre;
     }
 
-   
 }

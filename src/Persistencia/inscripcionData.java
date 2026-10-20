@@ -61,10 +61,10 @@ public class inscripcionData {
             while (rs.next()) {
                 Inscripcion insc = new Inscripcion();
                 insc.setIdInscripcion(rs.getInt("idInscripcion"));
-                
-                alumno a = aluData.buscarAlumno(rs.getInt("idAlumno"));
+
+                alumno a = aluData.buscarPorId(rs.getInt("idAlumno"));
                 Materia m = matData.buscarMateria(rs.getInt("idMateria"));
-                
+
                 insc.setAlumno(a);
                 insc.setMateria(m);
                 insc.setNota(rs.getDouble("nota"));
@@ -93,10 +93,10 @@ public class inscripcionData {
             while (rs.next()) {
                 Inscripcion insc = new Inscripcion();
                 insc.setIdInscripcion(rs.getInt("idInscripcion"));
-                
-                alumno a = aluData.buscarAlumno(rs.getInt("idAlumno"));
+
+                alumno a = aluData.buscarPorId(rs.getInt("idAlumno"));
                 Materia m = matData.buscarMateria(rs.getInt("idMateria"));
-                
+
                 insc.setAlumno(a);
                 insc.setMateria(m);
                 insc.setNota(rs.getDouble("nota"));
@@ -115,10 +115,10 @@ public class inscripcionData {
     // Obtener materias cursadas por Alumno
     public List<Materia> obtenerMateriasCursadas(int idAlumno) {
         ArrayList<Materia> materias = new ArrayList<>();
-        String sql = "SELECT m.idMateria, m.nombre, m.año, m.estado " +
-                     "FROM inscripcion i JOIN materia m ON (i.idMateria = m.idMateria) " +
-                     "WHERE i.idAlumno = ? AND m.estado = 1";
-
+        String sql = "SELECT m.idMateria, m.nombre, m.activo "
+                + "FROM inscripcion i "
+                + "JOIN materia m ON i.idMateria = m.idMateria "
+                + "WHERE i.idAlumno = ? AND m.activo = 1";
         try {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, idAlumno);
@@ -128,8 +128,7 @@ public class inscripcionData {
                 Materia materia = new Materia();
                 materia.setIdMateria(rs.getInt("idMateria"));
                 materia.setNombre(rs.getString("nombre"));
-                materia.setAnioMateria(rs.getInt("año"));
-                materia.setEstado(rs.getBoolean("estado"));
+                materia.setActivo(rs.getBoolean("activo"));
 
                 materias.add(materia);
             }
@@ -145,9 +144,9 @@ public class inscripcionData {
     // Obtener materias NO cursadas por Alumno
     public List<Materia> obtenerMateriasNOCursadas(int idAlumno) {
         ArrayList<Materia> materias = new ArrayList<>();
-        String sql = "SELECT * FROM materia WHERE estado = 1 AND idMateria NOT IN " +
-                     "(SELECT idMateria FROM inscripcion WHERE idAlumno = ?)";
-
+        String sql = "SELECT * FROM materia "
+                + "WHERE activo = 1 AND idMateria NOT IN "
+                + "(SELECT idMateria FROM inscripcion WHERE idAlumno = ?)";
         try {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, idAlumno);
@@ -157,9 +156,7 @@ public class inscripcionData {
                 Materia materia = new Materia();
                 materia.setIdMateria(rs.getInt("idMateria"));
                 materia.setNombre(rs.getString("nombre"));
-                materia.setAnioMateria(rs.getInt("año"));
-                materia.setEstado(rs.getBoolean("estado"));
-
+                materia.setActivo(rs.getBoolean("activo"));
                 materias.add(materia);
             }
             ps.close();
@@ -215,10 +212,11 @@ public class inscripcionData {
     // Obtener Alumnos inscritos en una Materia especifica
     public List<alumno> obtenerAlumnosPorMateria(int idMateria) {
         ArrayList<alumno> alumnosMateria = new ArrayList<>();
-        String sql = "SELECT a.idAlumno, a.dni, a.nombre, a.apellido, a.fechaNacimiento, a.estado " +
-                     "FROM inscripcion i JOIN alumno a ON (i.idAlumno = a.idAlumno) " +
-                     "WHERE i.idMateria = ? AND a.estado = 1";
-
+        String sql = "SELECT a.idAlumno, a.dni, a.nombre, a.apellido, "
+                + "a.fechaNacimiento, a.activo "
+                + "FROM inscripcion i "
+                + "JOIN alumno a ON i.idAlumno = a.idAlumno "
+                + "WHERE i.idMateria = ? AND a.activo = 1";
         try {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, idMateria);
@@ -227,11 +225,11 @@ public class inscripcionData {
             while (rs.next()) {
                 alumno alu = new alumno();
                 alu.setIdAlumno(rs.getInt("idAlumno"));
-                alu.setDni_alumno(rs.getInt("dni"));
+                alu.setDni(rs.getString("dni"));
+                alu.setActivo(rs.getBoolean("activo"));
                 alu.setApellido(rs.getString("apellido"));
                 alu.setNombre(rs.getString("nombre"));
                 alu.setFechaNacimiento(rs.getDate("fechaNacimiento").toLocalDate());
-                alu.setEstado(rs.getBoolean("estado"));
 
                 alumnosMateria.add(alu);
             }
