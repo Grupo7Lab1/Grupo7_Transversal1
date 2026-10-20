@@ -6,132 +6,50 @@ package Vista;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import modelo.Materia;
-import persistencia.MateriaData;
+import dominio.Materia;
+import Persistencia.materiaData;
+
 /**
  *
  * @author Mrjoshep
  */
 public class VistaMateria extends JInternalFrame {
 
-    private JTextField txtId, txtNombre;
+    private materiaData md = new materiaData();
     private DefaultTableModel modeloTabla;
-    private MateriaData md = new MateriaData();
 
     public VistaMateria() {
-        super("Gestión de Materias", true, true, true, true);
-        setSize(600, 450);
-        setLayout(new BorderLayout(5, 5));
+        initComponents();
 
-        JPanel pForm = new JPanel(new GridLayout(2, 2, 5, 5));
-        pForm.setBorder(BorderFactory.createTitledBorder("Datos de la Materia"));
-        pForm.add(new JLabel("ID:"));   txtId = new JTextField(); pForm.add(txtId);
-        pForm.add(new JLabel("Nombre:")); txtNombre = new JTextField(); pForm.add(txtNombre);
-
-        JPanel pBtn = new JPanel(new FlowLayout());
-        JButton btnNuevo      = new JButton("Nuevo");
-        JButton btnInsertar   = new JButton("Insertar");
-        JButton btnBuscar     = new JButton("Buscar");
-        JButton btnActualizar = new JButton("Actualizar");
-        JButton btnEliminar   = new JButton("Eliminar Físico");
-        JButton btnBaja       = new JButton("Baja Lógica");
-        JButton btnAlta       = new JButton("Alta Lógica");
-        JButton btnListar     = new JButton("Listar");
-        for (JButton b : new JButton[]{btnNuevo,btnInsertar,btnBuscar,btnActualizar,
-                                        btnEliminar,btnBaja,btnAlta,btnListar})
-            pBtn.add(b);
-
-        modeloTabla = new DefaultTableModel(new String[]{"ID","Nombre","Estado"}, 0);
-        JTable tabla = new JTable(modeloTabla);
-        JScrollPane scroll = new JScrollPane(tabla);
-
-        JPanel pNorte = new JPanel(new BorderLayout());
-        pNorte.add(pForm, BorderLayout.CENTER);
-        pNorte.add(pBtn,  BorderLayout.SOUTH);
-        add(pNorte, BorderLayout.NORTH);
-        add(scroll,  BorderLayout.CENTER);
-
-        btnNuevo.addActionListener(e -> { txtId.setText(""); txtNombre.setText(""); });
-
-        btnInsertar.addActionListener(e -> {
-            try {
-                if (md.insertar(new Materia(txtNombre.getText()))) {
-                    JOptionPane.showMessageDialog(this, "Materia insertada.");
-                    listar();
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
-            }
-        });
-
-        btnBuscar.addActionListener(e -> {
-            try {
-                Materia m = md.buscar(Integer.parseInt(txtId.getText()));
-                if (m != null) txtNombre.setText(m.getNombre());
-                else JOptionPane.showMessageDialog(this, "No encontrada.");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
-            }
-        });
-
-        btnActualizar.addActionListener(e -> {
-            try {
-                Materia m = new Materia(Integer.parseInt(txtId.getText()), txtNombre.getText(), 1);
-                if (md.actualizar(m)) {
-                    JOptionPane.showMessageDialog(this, "Materia actualizada.");
-                    listar();
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
-            }
-        });
-
-        btnEliminar.addActionListener(e -> {
-            try {
-                int ok = JOptionPane.showConfirmDialog(this, "¿Eliminar físicamente?");
-                if (ok == JOptionPane.YES_OPTION && md.eliminar(Integer.parseInt(txtId.getText()))) {
-                    JOptionPane.showMessageDialog(this, "Eliminada.");
-                    listar();
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
-            }
-        });
-
-        btnBaja.addActionListener(e -> {
-            try {
-                if (md.bajaLogica(Integer.parseInt(txtId.getText())))
-                    JOptionPane.showMessageDialog(this, "Baja lógica aplicada.");
-                listar();
-            } catch (Exception ex) { }
-        });
-
-        btnAlta.addActionListener(e -> {
-            try {
-                if (md.altaLogica(Integer.parseInt(txtId.getText())))
-                    JOptionPane.showMessageDialog(this, "Alta lógica aplicada.");
-                listar();
-            } catch (Exception ex) { }
-        });
-
-        btnListar.addActionListener(e -> listar());
-
-        tabla.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                int f = tabla.getSelectedRow();
-                txtId.setText(modeloTabla.getValueAt(f, 0).toString());
-                txtNombre.setText(modeloTabla.getValueAt(f, 1).toString());
-            }
-        });
-
+        modeloTabla = new DefaultTableModel(
+                new String[]{"Codigo", "Catedra", "Año", "Activa"}, 0);
+        jTable2.setModel(modeloTabla);
         listar();
+
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int f = jTable2.getSelectedRow();
+                if (f >= 0) {
+                    jTCodigo.setText(modeloTabla.getValueAt(f, 0).toString());
+                    jTCatedra.setText(modeloTabla.getValueAt(f, 1).toString());
+                    jTanio.setText(modeloTabla.getValueAt(f, 2).toString());
+                    jCBActiva.setSelected(
+                            Boolean.parseBoolean(modeloTabla.getValueAt(f, 3).toString()));
+                }
+            }
+        });
     }
 
     private void listar() {
         modeloTabla.setRowCount(0);
-        for (Materia m : md.listarTodos()) {
-            modeloTabla.addRow(new Object[]{m.getIdMateria(), m.getNombre(), m.getEstado()});
+        for (Materia m : md.listarMaterias()) {
+            modeloTabla.addRow(new Object[]{
+                m.getIdMateria(),
+                m.getCodigo(),
+                m.getNombre(),
+                m.isActivo()
+            });
         }
     }
 
@@ -323,35 +241,107 @@ public class VistaMateria extends JInternalFrame {
     }//GEN-LAST:event_jTanioActionPerformed
 
     private void jBNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBNuevoActionPerformed
-        // TODO add your handling code here:
+        jTCodigo.setText("");
+        jTCatedra.setText("");
+        jTanio.setText("");
+        jCBActiva.setSelected(false);
     }//GEN-LAST:event_jBNuevoActionPerformed
 
     private void jBGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBGuardarActionPerformed
-        // TODO add your handling code here:
+        try {
+            Materia m = new Materia(
+                    jTCodigo.getText(),
+                    jTCatedra.getText(),
+                    jCBActiva.isSelected()
+            );
+            if (md.guardarMateria(m)) {
+                JOptionPane.showMessageDialog(this, "Materia guardada.");
+                listar();
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jBGuardarActionPerformed
 
     private void jBActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBActualizarActionPerformed
-        // TODO add your handling code here:
+        try {
+            Materia m = new Materia(
+                    Integer.parseInt(jTanio.getText()),
+                    jTCodigo.getText(),
+                    jTCatedra.getText(),
+                    jCBActiva.isSelected()
+            );
+            if (md.modificarMateria(m)) {
+                JOptionPane.showMessageDialog(this, "Materia actualizada.");
+                listar();
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jBActualizarActionPerformed
 
     private void jBBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBBorrarActionPerformed
-        // TODO add your handling code here:
+        try {
+            int id = Integer.parseInt(jTanio.getText());
+            int ok = JOptionPane.showConfirmDialog(this, "¿Eliminar físicamente?");
+            if (ok == JOptionPane.YES_OPTION) {
+                if (md.eliminarMateria(id)) {
+                    JOptionPane.showMessageDialog(this, "Materia eliminada.");
+                    listar();
+                    jTCodigo.setText("");
+                    jTCatedra.setText("");
+                    jTanio.setText("");
+                    jCBActiva.setSelected(false);
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jBBorrarActionPerformed
 
     private void jBBajaLogicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBBajaLogicaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jBBajaLogicaActionPerformed
+        try {
+            int id = Integer.parseInt(jTanio.getText());
+            if (md.bajaLogica(id)) {
+                JOptionPane.showMessageDialog(this, "Baja lógica aplicada.");
+                listar();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
 
+    }//GEN-LAST:event_jBBajaLogicaActionPerformed
+    }
     private void jBAltaLogicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAltaLogicaActionPerformed
-        // TODO add your handling code here:
+        try {
+            Materia m = new Materia(
+                    Integer.parseInt(jTanio.getText()),
+                    jTCodigo.getText(),
+                    jTCatedra.getText(),
+                    true // activo = true
+            );
+            if (md.modificarMateria(m)) {
+                JOptionPane.showMessageDialog(this, "Alta lógica aplicada.");
+                listar();
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
     }//GEN-LAST:event_jBAltaLogicaActionPerformed
 
     private void jBListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBListarActionPerformed
-        // TODO add your handling code here:
+        modeloTabla.setRowCount(0);
+        for (Materia m : md.listarMaterias()) {
+            modeloTabla.addRow(new Object[]{
+                m.getIdMateria(),
+                m.getCodigo(),
+                m.getNombre(),
+                m.isActivo()
+            });
+        }
     }//GEN-LAST:event_jBListarActionPerformed
 
     private void jBSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBSalirActionPerformed
-        // TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_jBSalirActionPerformed
 
 
