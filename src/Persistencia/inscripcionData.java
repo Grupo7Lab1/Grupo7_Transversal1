@@ -22,8 +22,12 @@ public class inscripcionData {
     private materiaData matData = new materiaData();
     private alumnoData aluData = new alumnoData();
 
-    public inscripcionData() throws SQLException {
-        this.con = conexion.conectar();
+    public inscripcionData() {
+        try {
+            this.con = conexion.conectar();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error de conexión en inscripcionData: " + ex.getMessage());
+        }
     }
 
     // Guardar o Inscribir Alumno en Materia
@@ -115,7 +119,7 @@ public class inscripcionData {
     // Obtener materias cursadas por Alumno
     public List<Materia> obtenerMateriasCursadas(int idAlumno) {
         ArrayList<Materia> materias = new ArrayList<>();
-        String sql = "SELECT m.idMateria, m.nombre, m.activo "
+        String sql = "SELECT m.idMateria, m.codigo, m.nombre, m.activo "
                 + "FROM inscripcion i "
                 + "JOIN materia m ON i.idMateria = m.idMateria "
                 + "WHERE i.idAlumno = ? AND m.activo = 1";
@@ -127,6 +131,7 @@ public class inscripcionData {
             while (rs.next()) {
                 Materia materia = new Materia();
                 materia.setIdMateria(rs.getInt("idMateria"));
+                materia.setCodigo(rs.getString("codigo"));
                 materia.setNombre(rs.getString("nombre"));
                 materia.setActivo(rs.getBoolean("activo"));
 
@@ -155,6 +160,7 @@ public class inscripcionData {
             while (rs.next()) {
                 Materia materia = new Materia();
                 materia.setIdMateria(rs.getInt("idMateria"));
+                materia.setCodigo(rs.getString("codigo"));
                 materia.setNombre(rs.getString("nombre"));
                 materia.setActivo(rs.getBoolean("activo"));
                 materias.add(materia);

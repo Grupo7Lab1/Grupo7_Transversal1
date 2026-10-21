@@ -8,13 +8,10 @@ import Persistencia.alumnoData;
 import Persistencia.inscripcionData;
 import dominio.Inscripcion;
 import dominio.alumno;
-import javax.swing.*;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Mrjoshep
- */
 public class VistaCargarNotas extends javax.swing.JInternalFrame {
 
     private inscripcionData id = new inscripcionData();
@@ -24,7 +21,12 @@ public class VistaCargarNotas extends javax.swing.JInternalFrame {
     public VistaCargarNotas() {
         initComponents();
         modeloTabla = new DefaultTableModel(
-                new String[]{"ID Inscripcion", "Materia", "Nota"}, 0);
+                new String[]{"ID Inscripcion", "Materia", "Nota"}, 0) {
+            @Override
+            public boolean isCellEditable(int fila, int columna) {
+                return false;
+            }
+        };
         jTable1.setModel(modeloTabla);
 
         cargarAlumnos();
@@ -34,35 +36,50 @@ public class VistaCargarNotas extends javax.swing.JInternalFrame {
 
     private void cargarAlumnos() {
         jCBSelecciondeAlumno.removeAllItems();
-        for (alumno a : ad.listarAlumnos()) {
-            jCBSelecciondeAlumno.addItem(a);
+        List<alumno> lista = ad.listarAlumnos();
+        for (alumno a : lista) {
+            if (a.isActivo()) {
+
+                jCBSelecciondeAlumno.addItem(a.getIdAlumno() + " - " + a.getApellido() + " " + a.getNombre());
+            }
         }
     }
 
     private void cargarInscripciones() {
         jCBInscripciones.removeAllItems();
-        alumno a = (alumno) jCBSelecciondeAlumno.getSelectedItem();
-        if (a == null) {
-            return;
-        }
-        for (Inscripcion insc : id.obtenerInscripcionesPorAlumno(a.getIdAlumno())) {
-            jCBInscripciones.addItem(insc);
+        int indiceAlumno = jCBSelecciondeAlumno.getSelectedIndex();
+
+        if (indiceAlumno != -1) {
+            List<alumno> alumnos = ad.listarAlumnos();
+            alumno selec = alumnos.get(indiceAlumno);
+
+            if (selec != null) {
+                List<Inscripcion> inscripciones = id.obtenerInscripcionesPorAlumno(selec.getIdAlumno());
+                for (Inscripcion insc : inscripciones) {
+                    jCBInscripciones.addItem(insc.getMateria().getNombre() + " (ID: " + insc.getIdInscripcion() + ")");
+                }
+            }
         }
         listar();
     }
 
     private void listar() {
         modeloTabla.setRowCount(0);
-        alumno a = (alumno) jCBSelecciondeAlumno.getSelectedItem();
-        if (a == null) {
-            return;
-        }
-        for (Inscripcion insc : id.obtenerInscripcionesPorAlumno(a.getIdAlumno())) {
-            modeloTabla.addRow(new Object[]{
-                insc.getIdInscripcion(),
-                insc.getMateria().getNombre(),
-                insc.getNota()
-            });
+        int indiceAlumno = jCBSelecciondeAlumno.getSelectedIndex();
+
+        if (indiceAlumno != -1) {
+            List<alumno> alumnos = ad.listarAlumnos();
+            alumno selec = alumnos.get(indiceAlumno);
+
+            if (selec != null) {
+                for (Inscripcion insc : id.obtenerInscripcionesPorAlumno(selec.getIdAlumno())) {
+                    modeloTabla.addRow(new Object[]{
+                        insc.getIdInscripcion(),
+                        insc.getMateria().getNombre(),
+                        insc.getNota()
+                    });
+                }
+            }
         }
     }
 
@@ -188,12 +205,20 @@ public class VistaCargarNotas extends javax.swing.JInternalFrame {
 
     private void jBGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBGuardarActionPerformed
         try {
-            alumno a = (alumno) jCBSelecciondeAlumno.getSelectedItem();
-            Inscripcion insc = (Inscripcion) jCBInscripciones.getSelectedItem();
-            if (a == null || insc == null) {
+            int indiceAlumno = jCBSelecciondeAlumno.getSelectedIndex();
+            int indiceInscripcion = jCBInscripciones.getSelectedIndex();
+
+            if (indiceAlumno == -1 || indiceInscripcion == -1) {
                 JOptionPane.showMessageDialog(this, "Seleccione alumno e inscripción.");
                 return;
             }
+
+            List<alumno> alumnos = ad.listarAlumnos();
+            alumno a = alumnos.get(indiceAlumno);
+
+            List<Inscripcion> inscripciones = id.obtenerInscripcionesPorAlumno(a.getIdAlumno());
+            Inscripcion insc = inscripciones.get(indiceInscripcion);
+
             Inscripcion nueva = new Inscripcion();
             nueva.setAlumno(a);
             nueva.setMateria(insc.getMateria());
@@ -207,23 +232,35 @@ public class VistaCargarNotas extends javax.swing.JInternalFrame {
 
     private void jBModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBModificarActionPerformed
         try {
-            alumno a = (alumno) jCBSelecciondeAlumno.getSelectedItem();
-            Inscripcion insc = (Inscripcion) jCBInscripciones.getSelectedItem();
-            if (a == null || insc == null) {
+            int indiceAlumno = jCBSelecciondeAlumno.getSelectedIndex();
+            int indiceInscripcion = jCBInscripciones.getSelectedIndex();
+
+            if (indiceAlumno == -1 || indiceInscripcion == -1) {
                 JOptionPane.showMessageDialog(this, "Seleccione alumno e inscripción.");
                 return;
             }
+
+            List<alumno> alumnos = ad.listarAlumnos();
+            alumno a = alumnos.get(indiceAlumno);
+
+            List<Inscripcion> inscripciones = id.obtenerInscripcionesPorAlumno(a.getIdAlumno());
+            Inscripcion insc = inscripciones.get(indiceInscripcion);
+
             String notaStr = JOptionPane.showInputDialog(this, "Ingrese la nota:");
             if (notaStr == null) {
                 return;
             }
+
             double nota = Double.parseDouble(notaStr);
-            id.actualizarNotas(
+
+            id.actualizarNota(
                     a.getIdAlumno(),
                     insc.getMateria().getIdMateria(),
                     nota
             );
             listar();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Debe ingresar un número válido para la nota.");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
         }

@@ -15,12 +15,12 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Nestor Marchizone
  */
-public class VistaAlumno extends javax.swing.JInternalFrame {
+public class VistaALumno extends javax.swing.JInternalFrame {
 
     private final alumnoData datos = new alumnoData();
     private int idSeleccionado = 0;
 
-    public VistaAlumno() {
+    public VistaALumno() {
         initComponents();
 
         configurarTabla();

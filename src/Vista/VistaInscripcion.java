@@ -46,16 +46,18 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
 
     private void armarCabeceraTabla() {
         modelo.addColumn("ID");
+        modelo.addColumn("Código");
         modelo.addColumn("Materia");
-        modelo.addColumn("Año");
         jTable1.setModel(modelo);
     }
 
     private void cargarComboAlumnos() {
         jCboAlumnos.removeAllItems();
-
-        for (alumno a : obtenerAlumnosActivos()) {
-            jCboAlumnos.addItem(a.getNombre() + " " + a.getApellido());
+        List<alumno> lista = aluData.listarAlumnos();
+        for (alumno a : lista) {
+            if (a.isActivo()) { // Coincide con isActivo() de tu clase alumno
+                jCboAlumnos.addItem(a.getNombre() + " " + a.getApellido());
+            }
         }
     }
 
@@ -71,7 +73,7 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
         int indiceSeleccionado = jCboAlumnos.getSelectedIndex();
 
         if (indiceSeleccionado != -1) {
-            List<alumno> alumnos = obtenerAlumnosActivos();
+            List<alumno> alumnos = aluData.listarAlumnos();
             alumno selec = alumnos.get(indiceSeleccionado);
 
             if (selec != null) {
@@ -83,7 +85,8 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
                 }
 
                 for (Materia m : lista) {
-                    modelo.addRow(new Object[]{m.getIdMateria(), m.getNombre(), m.getAño()});
+                    // Coincide con getIdMateria(), getCodigo() y getNombre() de Materia
+                    modelo.addRow(new Object[]{m.getIdMateria(), m.getCodigo(), m.getNombre()});
                 }
             }
         }
@@ -215,10 +218,11 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
             alumno alu = alumnos.get(indiceAlumno);
 
             int idMateria = (Integer) modelo.getValueAt(filaSeleccionada, 0);
-            String nombreMateria = (String) modelo.getValueAt(filaSeleccionada, 1);
-            int anio = (Integer) modelo.getValueAt(filaSeleccionada, 2);
+            String codigoMateria = (String) modelo.getValueAt(filaSeleccionada, 1);
+            String nombreMateria = (String) modelo.getValueAt(filaSeleccionada, 2);
 
-            Materia mat = new Materia(idMateria, nombreMateria, anio, true);
+            // Constructor exacto de Materia: (idMateria, codigo, nombre, activo)
+            Materia mat = new Materia(idMateria, codigoMateria, nombreMateria, true);
             Inscripcion insc = new Inscripcion(0.0, alu, mat);
 
             insData.guardarInscripcion(insc);
