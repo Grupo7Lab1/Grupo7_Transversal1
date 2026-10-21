@@ -19,7 +19,7 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
     private DefaultTableModel modelo = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int fila, int columna) {
-            return false; // Evita que la tabla sea editable directamente
+            return false; 
         }
     };
 
@@ -37,7 +37,7 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
         armarCabeceraTabla();
         cargarComboAlumnos();
 
-        // Estado inicial de selección
+        // Estado inicial de seleccion
         jRBnoInscriptas.setSelected(true);
         jBInscribir.setEnabled(true);
         jBAnular.setEnabled(false);
@@ -55,7 +55,7 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
         jCboAlumnos.removeAllItems();
         List<alumno> lista = aluData.listarAlumnos();
         for (alumno a : lista) {
-            if (a.isActivo()) { // Coincide con isActivo() de tu clase alumno
+            if (a.isActivo()) { 
                 jCboAlumnos.addItem(a.getNombre() + " " + a.getApellido());
             }
         }
@@ -85,7 +85,7 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
                 }
 
                 for (Materia m : lista) {
-                    // Coincide con getIdMateria(), getCodigo() y getNombre() de Materia
+                    
                     modelo.addRow(new Object[]{m.getIdMateria(), m.getCodigo(), m.getNombre()});
                 }
             }
@@ -221,7 +221,7 @@ public class VistaInscripcion extends javax.swing.JInternalFrame {
             String codigoMateria = (String) modelo.getValueAt(filaSeleccionada, 1);
             String nombreMateria = (String) modelo.getValueAt(filaSeleccionada, 2);
 
-            // Constructor exacto de Materia: (idMateria, codigo, nombre, activo)
+            // Constructor de Materia: (idMateria, codigo, nombre, activo)
             Materia mat = new Materia(idMateria, codigoMateria, nombreMateria, true);
             Inscripcion insc = new Inscripcion(0.0, alu, mat);
 

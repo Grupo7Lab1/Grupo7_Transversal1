@@ -174,7 +174,7 @@ public class inscripcionData {
         return materias;
     }
 
-    // Borrar o Anular Inscripción
+    // Borrar o Anular Inscripcion
     public void borrarInscripcionMateriaAlumno(int idAlumno, int idMateria) {
         String sql = "DELETE FROM inscripcion WHERE idAlumno = ? AND idMateria = ?";
 

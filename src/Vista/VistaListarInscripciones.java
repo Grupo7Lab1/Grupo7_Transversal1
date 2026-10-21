@@ -17,7 +17,7 @@ public class VistaListarInscripciones extends javax.swing.JInternalFrame {
     private DefaultTableModel modelo = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int fila, int columna) {
-            // Solo se permite editar la columna 4 (Nota)
+            
             return columna == 4;
         }
     };

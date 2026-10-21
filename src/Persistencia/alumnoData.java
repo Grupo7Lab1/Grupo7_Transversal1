@@ -182,7 +182,7 @@ public class alumnoData {
             return false;
         }
     }
-    // DAR DE Alta
+    // DAR DE ALTA
 
     public boolean darDeAlta(int idAlumno) {
         String sql = "UPDATE alumno SET activo = true WHERE idAlumno = ?";
